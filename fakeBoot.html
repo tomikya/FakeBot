@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Boot</title>
+    <style>
+        *,
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: auto;
+        }
+
+        .wrapper {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 200px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #313131;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            border-radius: 2px;
+            padding: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+        }
+
+        input {
+            background-color: white;
+            padding: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+        }
+
+        #loaders {
+            display: none;
+            width: 85px;
+            height: 85px;
+            position: absolute;
+            border-top: 13px solid rgb(0, 0, 0);
+            top: 30%;
+            left: 40%;
+            z-index: 999;
+            border-radius: 50%;
+            animation: spin infinite linear 5s;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(1080deg);
+            }
+        }
+
+        footer {
+            background-color: #313131;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="pertanyaan"></h1>
+        <div class="content">
+            <div class="wrapper">
+                <input type="text" id="jawab" placeholder="Masukkan Jawaban Anda!">
+                <button id="btn" onclick="start()" type="submit">SEND</button>
+            </div>
+        </div>
+    </div>
+    <div id="loaders"></div>
+
+    <footer>
+        <div class="footer">
+            <p>&#169; Rufi tomisila cihuy</p>
+        </div>
+    </footer>
+    <script>
+        const pertanyaan = document.getElementById("pertanyaan");
+        const jawab = document.getElementById("jawab");
+        const loaders = document.getElementById("loaders")
+        const container = document.getElementsByClassName("container")
+        let init = 0;
+
+        const botSay = (data) => {
+            return [
+                "Hai siapa nama kamu ?",
+                `Halo ${data?.nama}, Berapa usia kamu ?`,
+                `Ohh jadi usia kamu ${data?.usia}, apa Hobi kamu di usia tersebut ?`,
+                `${data?.hobi} adalah hobi yang bagus, apa makanan favorit kamu saat sedang melakukan hobi tersebut ?`,
+                `Woww ${data?.favFood} memang makanan yang sangat enak !!`
+            ]
+        }
+        pertanyaan.innerHTML = botSay()[0]
+
+        let userData = [];
+
+        function start() {
+            if (jawab.value.length < 1) return alert("Masukkan Text!");
+            init++
+            if (init === 1) {
+                botDelay({ nama: jawab.value })
+            } else if (init === 2) {
+                botDelay({ usia: jawab.value })
+            } else if (init === 3) {
+                botDelay({ hobi: jawab.value })
+            } else if (init === 4) {
+                botDelay({ favFood: jawab.value })
+            } else if (init === 5) {
+                finish();
+            } else {
+
+                botEnd();
+            }
+        }
+
+        function botDelay(jawaban) {
+            console.log({ userData: userData })
+            loaders.style.display = "block";
+            container[0].style.filter = "blur(8px)"
+            setTimeout(() => {
+                pertanyaan.innerHTML = botSay(jawaban)[init];
+                loaders.style.display = "none";
+                container[0].style.filter = "none"
+            }, [1000])
+            userData.push(jawab.value);
+            jawab.value = "";
+        }
+
+        function finish() {
+            pertanyaan.innerHTML = `Terimakasih ${userData[0]} sudah menggunakan fakeBot`;
+            jawab.value = "siap thanks";
+        }
+
+        function botEnd() {
+            alert(`Terimakasih ${userData[0]} sudah menggunakan fakeBoot, kamu akan dialihkan ke halaman Utama😀`)
+            window.location.reload();
+        }
+    </script>
+</body>
+
+</html>
